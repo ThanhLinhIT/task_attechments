@@ -21,8 +21,14 @@ const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:5173')
 
 app.use(cors({
   origin: (origin, callback) => {
-    // allow server-to-server (no origin) and localhost
-    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+    // Cho phép server-to-server (no origin), localhost, các domain cụ thể trong FRONTEND_URL, và TẤT CẢ các domain từ Vercel
+    if (
+      !origin || 
+      allowedOrigins.includes(origin) || 
+      origin.endsWith('.vercel.app')
+    ) {
+      return callback(null, true);
+    }
     callback(new Error(`CORS blocked: ${origin}`));
   },
   credentials: true,
